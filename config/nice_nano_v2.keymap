@@ -1,0 +1,23 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    /* 把 P0.09 定义为唤醒源 */
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        input-gpios = <&gpio0 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            /* 唤醒时发送一个空格信号 */
+            bindings = <&kp SPACE>;
+        };
+    };
+};
