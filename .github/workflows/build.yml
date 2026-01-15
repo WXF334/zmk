@@ -37,8 +37,10 @@ jobs:
 
       - name: Build (nice_nano_v2)
         run: |
-          # 核心修复：明确指定 ZMK 的 app 路径和板子路径
-          west build -s zmk/app -b nice_nano_v2 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
+          # 关键点：我们通过 -DZEPHYR_EXTRA_MODULES 强行把 ZMK 加入搜索路径
+          west build -s zmk/app -b nice_nano_v2 -- \
+          -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" \
+          -DZEPHYR_EXTRA_MODULES="${GITHUB_WORKSPACE}/zmk/app"
 
       - name: Rename zmk.uf2
         run: cp build/zephyr/zmk.uf2 nice_nano_v2.uf2
