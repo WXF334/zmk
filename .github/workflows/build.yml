@@ -5,8 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: zmkfirmware/zmk-build-arm:stable
+    name: Build
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,12 +34,10 @@ jobs:
       - name: West Zephyr export
         run: west zephyr-export
 
-      - name: Build (nice_nano_v2)
+      - name: Build nice_nano_v2
+        # 注意这里：我们进入 zmk/app 文件夹并明确指向 board 文件夹路径
         run: |
-          # 关键点：我们通过 -DZEPHYR_EXTRA_MODULES 强行把 ZMK 加入搜索路径
-          west build -s zmk/app -b nice_nano_v2 -- \
-          -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" \
-          -DZEPHYR_EXTRA_MODULES="${GITHUB_WORKSPACE}/zmk/app"
+          west build -s zmk/app -b nice_nano_v2 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" -DBOARD_ROOT="${GITHUB_WORKSPACE}/zmk/app"
 
       - name: Rename zmk.uf2
         run: cp build/zephyr/zmk.uf2 nice_nano_v2.uf2
